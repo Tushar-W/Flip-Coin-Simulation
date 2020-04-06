@@ -5,6 +5,7 @@ declare -A singletCombination
 declare -A doubletCombination
 declare -A tripletCombination
 declare -A percentage
+declare -a sortArray
 count=0
 
 function flipCoin() {
@@ -14,6 +15,39 @@ function flipCoin() {
    else
    	echo "T"
    fi
+}
+
+function sortingArray() {
+	 for (( count=0; count<${#sortArray[@]}; ++count ))
+   do
+      for (( j=$((count+1)); j<${#sortArray[@]}; ++j))
+      do
+         if [ ${sortArray[count]} -lt ${sortArray[j]} ];
+         then
+            temp=${sortArray[count]}
+            sortArray[count]=${sortArray[j]}
+            sortArray[j]=$temp
+         fi
+      done
+	done
+}
+
+function sortAllCombination() {
+   i=0
+	for value in ${percentage[@]}
+   do
+      sortArray[$i]=$value
+		((i++))
+   done
+	sortingArray
+	for key in ${!percentage[@]}
+	do
+		if [ ${sortArray[0]} -eq ${percentage[$key]} ];
+		then
+			winningCombination=$key
+			break
+		fi
+	done
 }
 
 function getSingletPercentage() {
@@ -101,4 +135,5 @@ echo ${!tripletCombination[@]}
 getTripletPercentage
 echo ${percentage[@]}
 echo ${!percentage[@]}
-
+sortAllCombination
+echo "Winning Combination Is:" $winningCombination
